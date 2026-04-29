@@ -29,4 +29,17 @@ async function createProperty(property) {
     }    
 }
 
-export { getProperties, createProperty }
+async function deleteProperty(id) {
+    try {
+        const response = await fetch(url + '/' + id,{
+            method: 'DELETE'
+        })
+        const result = await response.json()
+        return result
+    } catch (err) {
+        console.error('Hiba! Az ingatlen törlése sikertelen!')
+        console.error(err)
+    }
+}
+
+export { getProperties, createProperty, deleteProperty }
