@@ -28,7 +28,8 @@
     <h1>Ingatlan</h1>
 
   <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" class="btn btn-primary my-3" 
+  data-bs-toggle="modal" data-bs-target="#exampleModal">
     Hozzáadás...
   </button>    
 
@@ -40,6 +41,7 @@
           <th>Ár (LTC)</th>
           <th>Település</th>
           <th>Alapterület (m²)</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -95,8 +97,12 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" 
+          data-bs-dismiss="modal"
+          id="closeButton">Bezárás</button>
+
           <button type="submit" class="btn btn-primary"
+          data-bs-dismiss="modal"
           form="propertyForm">Mentés</button>
         </div>
       </div>

@@ -27,8 +27,13 @@ var propertyList = await getProperties()
 const doc = {
     tbody: document.querySelector('#tbody'),
     aboutButton: document.querySelector('#aboutButton'),
-    propertyForm: document.querySelector('#propertyForm')
+    propertyForm: document.querySelector('#propertyForm'),
+    closeButton: document.querySelector('#closeButton')
 }
+
+doc.closeButton.addEventListener('click', () => {
+    doc.propertyForm.reset()
+}) 
 
 doc.propertyForm.addEventListener('submit', (event) => {
     event.preventDefault()
@@ -37,20 +42,24 @@ doc.propertyForm.addEventListener('submit', (event) => {
     const propertyForm = new FormData(event.target)
 
     const property = {
+        id: Number(propertyForm.get('id')),
         type: propertyForm.get('type'),
-        price: propertyForm.get('price'),
+        price: Number(propertyForm.get('price')),
         city: propertyForm.get('city'),
-        baseArea: propertyForm.get('baseArea')
+        baseArea: Number(propertyForm.get('baseArea'))
     }
 
     startSave(property)
 })
 
-function deleteOneProperty() {
+function deleteOneProperty(id) {
     deleteProperty(id)
+    propertyList = propertyList.filter(prop => prop.id !== id)
+    render()
 }
 
 window.deleteOneProperty = deleteOneProperty
+window.editProperty = editProperty
 
 function render() {
     var rows = ''
@@ -63,9 +72,21 @@ function render() {
             <td>${prop.city}</td>
             <td>${prop.baseArea}</td>
             <td>
-                <button onclick="deleteOneProperty()"
+                <button onclick="deleteOneProperty(${prop.id})"
                 class="btn btn-danger">
                 Törlés
+                </button>
+
+                <button onclick="editProperty(this)"
+                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                class="btn btn-success"
+                data-id="${prop.id}"
+                data-type="${prop.type}"
+                data-price="${prop.price}"
+                data-city="${prop.city}"
+                data-baseArea="${prop.baseArea}"
+                >
+                    Szerkesztés
                 </button>
             </td>
         </tr>
@@ -94,10 +115,20 @@ function startSave(property) {
 }
 async function createNewProperty(property) {
     const res = await createProperty(property)
-    propertyList.push(property)
+    propertyList.push(res)
     render()
     console.log(res)
-
+    doc.propertyForm.reset()
 }
 function updateOneProperty() { }
+
+function editProperty(e) {
+    propertyForm.id.value = e.getAttribute('data-id')
+    propertyForm.type.value = e.getAttribute('data-type')
+    propertyForm.price.value = e.getAttribute('data-price')
+    propertyForm.city.value = e.getAttribute('data-city')
+    propertyForm.baseArea.value = e.getAttribute('data-baseArea')
+
+}
+
 
