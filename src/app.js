@@ -16,13 +16,13 @@ import Swal from 'sweetalert2'
 import {
     getProperties,
     createProperty,
-    deleteProperty
+    deleteProperty,
+    updateProperty
 } from './propertyService.js'
-
-// deleteProperty(13)
 
 console.log(await getProperties())
 var propertyList = await getProperties()
+var adding = true
 
 const doc = {
     tbody: document.querySelector('#tbody'),
@@ -33,11 +33,10 @@ const doc = {
 
 doc.closeButton.addEventListener('click', () => {
     doc.propertyForm.reset()
-}) 
+})
 
 doc.propertyForm.addEventListener('submit', (event) => {
     event.preventDefault()
-    console.log('műkszik...')
 
     const propertyForm = new FormData(event.target)
 
@@ -96,22 +95,21 @@ function render() {
     doc.tbody.innerHTML = rows
 }
 
-// window.addEventListener('load', () => {
-//     render()
-// })
-
 render()
 
 doc.aboutButton.addEventListener('click', () => {
     Swal.fire({
         title: 'Ingatlan',
-        text: 'Erős István, IN, 2026-04-23'
+        text: 'Verzió: 1.0.0 Erős István, IN, 2026-04-23'
     })
 })
 
 function startSave(property) {
-    createNewProperty(property)
-    
+    if (adding) {
+        createNewProperty(property)
+    } else {
+        updateOneProperty(property)
+    }
 }
 async function createNewProperty(property) {
     const res = await createProperty(property)
@@ -120,9 +118,22 @@ async function createNewProperty(property) {
     console.log(res)
     doc.propertyForm.reset()
 }
-function updateOneProperty() { }
+async function updateOneProperty(property) {
+    console.log(property)
+    await updateProperty(property)
+    propertyList = propertyList.map(prop => {
+        if (prop.id === property.id) {
+            return property
+        } else {
+            return prop
+        }
+    })
+    render()
+    adding = true
+}
 
 function editProperty(e) {
+    adding = false
     propertyForm.id.value = e.getAttribute('data-id')
     propertyForm.type.value = e.getAttribute('data-type')
     propertyForm.price.value = e.getAttribute('data-price')
